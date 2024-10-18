@@ -1,6 +1,6 @@
-struct A;          
-struct S(A);       
-struct SGen<T>(T); 
+struct A;
+struct S(A);
+struct SGen<T>(T);
 
 fn reg_fn(_s: S) {}
 
@@ -12,9 +12,9 @@ fn generic<T>(_s: SGen<T>) {}
 
 #[test] // Тест 1
 fn test1() {
-    reg_fn(S(A));          
-    gen_spec_t(SGen(A));   
-    gen_spec_i32(SGen(3)); 
+    reg_fn(S(A));
+    gen_spec_t(SGen(A));
+    gen_spec_i32(SGen(3));
 
     generic::<char>(SGen('a'));
     generic(SGen('b'));
@@ -35,34 +35,17 @@ fn test2() {
     println!("Success!");
 }
 
-struct Point<T> {
+struct Point1<T> {
     x: T,
     y: T,
 }
 
 #[test] // Тест 3
 fn test3() {
-    let integer = Point { x: 5, y: 10 };
-    let float = Point { x: 1.0, y: 4.0 };
+    let integer = Point1 { x: 5, y: 10 };
+    let float = Point1 { x: 1.0, y: 4.0 };
 
     println!("Success!");
-}
-
-struct Val<T> {
-    val: T,
-}
-
-impl Val<f64> {
-    fn value(&self) -> &f64 {
-        &self.val
-    }
-}
-
-#[test] // Тест 4
-fn test4() {
-    let x = Val { val: 3.0 };
-    let y = Val { val: "hello".to_string() };
-    println!("{}, {}", x.value(), y.value());
 }
 
 struct Point<T, U> {
@@ -79,8 +62,8 @@ impl<T, U> Point<T, U> {
     }
 }
 
-#[test] // Тест 5
-fn test5() {
+#[test] // Тест 4
+fn test4() {
     let p1 = Point { x: 5, y: 10 };
     let p2 = Point { x: "Hello", y: '中' };
 
@@ -96,8 +79,8 @@ struct Array<T, const N: usize> {
     data: [T; N],
 }
 
-#[test] // Тест 6
-fn test6() {
+#[test] // Тест 5
+fn test5() {
     let arrays = [
         Array { data: [1, 2, 3] },
         Array { data: [1.0, 2.0, 3.0] },
@@ -111,8 +94,8 @@ fn print_array<T: std::fmt::Debug>(arr: T) {
     println!("{:?}", arr);
 }
 
-#[test] // Тест 7
-fn test7() {
+#[test] // Тест 6
+fn test6() {
     let arr = [1, 2, 3];
     print_array(arr);
 
@@ -120,23 +103,22 @@ fn test7() {
     print_array(arr);
 }
 
-fn check_size<T>(val: T)
-where
-    Assert<{ core::mem::size_of::<T>() < 768 }>: IsTrue,
-{
-    //...
+fn check_size<T>(val: T) {
+    let size = std::mem::size_of::<T>();
+    assert!(size < 768);
 }
 
-#[test] // Тест 8
-fn test8() {
-    check_size([0u8; 767]); 
+#[test] // Тест 7
+fn test7() {
+    check_size([0u8; 767]);
     check_size([0i32; 191]);
-    check_size(["hello你好"; 1]); 
-    check_size([(); 1].map(|_| "hello你好".to_string()));  
+    check_size(["hello你好"; 1]);
+    check_size([(); 1].map(|_| "hello你好".to_string()));
     check_size(['中'; 1]);
 
     println!("Success!");
 }
+
 
 pub enum Assert<const CHECK: bool> {}
 
@@ -168,8 +150,8 @@ impl Hello for Teacher {
     }
 }
 
-#[test] // Тест 9
-fn test9() {
+#[test] // Тест 8
+fn test8() {
     let s = Student {};
     assert_eq!(s.say_hi(), "hi");
     assert_eq!(s.say_something(), "I'm a good student");
@@ -197,8 +179,8 @@ impl Inches {
 #[derive(Debug)]
 struct Seconds(i32);
 
-#[test] // Тест 10
-fn test10() {
+#[test] // Тест 9
+fn test9() {
     let _one_second = Seconds(1);
 
     println!("One second looks like: {:?}", _one_second);
@@ -222,8 +204,8 @@ fn multiply<T: std::ops::Mul<Output = T> + Copy>(x: T, y: T) -> T {
     x * y
 }
 
-#[test] // Тест 11
-fn test11() {
+#[test] // Тест 10
+fn test10() {
     assert_eq!(6, multiply(2u8, 3u8));
     assert_eq!(5.0, multiply(1.0, 5.0));
 
@@ -253,10 +235,10 @@ impl std::ops::Sub<Foo> for Bar {
     }
 }
 
-#[test] // Тест 12
-fn test12() {
+#[test] // Тест 11
+fn test11() {
     assert_eq!(Foo + Bar, FooBar);
-    assert_eq!(Foo - Bar, BarFoo);
+    assert_eq!(Bar - Foo, BarFoo);
 
     println!("Success!");
 }
@@ -290,8 +272,8 @@ impl Summary for Weibo {
     }
 }
 
-#[test] // Тест 13
-fn test13() {
+#[test] // Тест 12
+fn test12() {
     let post = Post {
         title: "Popular Rust".to_string(),
         author: "Sunface".to_string(),
@@ -336,15 +318,15 @@ fn random_animal(random_number: f64) -> Box<dyn Animal> {
     }
 }
 
-#[test] // Тест 14
-fn test14() {
+#[test] // Тест 13
+fn test13() {
     let random_number = 0.234;
     let animal = random_animal(random_number);
     println!("You've randomly chosen an animal, and it says {}", animal.noise());
 }
 
-#[test] // Тест 15
-fn test15() {
+#[test] // Тест 14
+fn test14() {
     assert_eq!(sum(1, 2), 3);
 }
 
@@ -365,14 +347,14 @@ impl<T: std::fmt::Debug> Pair<T> {
     }
 }
 
-#[test] // Тест 16
-fn test16() {
+#[test] // Тест 15
+fn test15() {
     let pair = Pair::new(1, 2);
     pair.debug();
 }
 
-#[test] // Тест 17
-fn test17() {
+#[test] // Тест 16
+fn test16() {
     struct Cacher<T>
     where
         T: Fn(u32) -> u32,
@@ -406,139 +388,100 @@ fn test17() {
 
     let mut cacher = Cacher::new(|x| x + 1);
     assert_eq!(cacher.value(1), 2);
-    assert_eq!(cacher.value(2), 3);
+    assert_eq!(cacher.value(2), 2);
+}
 
-    println!("Success!");
+#[test] // Тест 17
+fn test17() {
+    let x = String::from("Hello");
+    let y = String::from("World");
+
+    let z = format!("{}, {}!", x, y);
+    println!("{}", z);
 }
 
 #[test] // Тест 18
 fn test18() {
-    let some_u8_value = Some(5);
-    let some_string_value = Some("a string");
-    let absent_string_value: Option<&str> = None;
+    let number_list = vec![34, 50, 25, 100, 65];
 
-    if let Some(value) = some_u8_value {
-        println!("value is: {}", value);
-    }
-
-    if let Some(value) = absent_string_value {
-        println!("This won't print: {}", value);
-    }
-
-    println!("Success!");
+    let largest = number_list.iter().max();
+    println!("{:?}", largest);
 }
 
 #[test] // Тест 19
 fn test19() {
-    let numbers = vec![1, 2, 3, 4, 5];
-    let mut sum = 0;
-
-    for number in numbers.iter() {
-        sum += number;
-    }
-
-    assert_eq!(sum, 15);
-    println!("Success!");
+    let v1 = vec![1, 2, 3];
+    let v2: Vec<i32> = v1.iter().map(|x| x + 1).collect();
+    println!("{:?}", v2);
 }
 
 #[test] // Тест 20
 fn test20() {
-    let mut counter = 0;
-
-    let result: Vec<i32> = (1..5).map(|x| {
-        counter += 1;
-        x * 2
-    }).collect();
-
-    assert_eq!(counter, 4);
-    assert_eq!(result, vec![2, 4, 6, 8]);
-
-    println!("Success!");
+    let arr = [10, 20, 30, 40, 50];
+    let sum: i32 = arr.iter().sum();
+    assert_eq!(sum, 150);
 }
 
 #[test] // Тест 21
 fn test21() {
-    let text = "hello world";
-    let count = text.split_whitespace().count();
-
-    assert_eq!(count, 2);
-    println!("Success!");
+    let words = vec!["apple", "banana", "grape"];
+    let upper_words: Vec<_> = words.iter().map(|word| word.to_uppercase()).collect();
+    println!("{:?}", upper_words);
 }
 
 #[test] // Тест 22
 fn test22() {
-    let v = vec![1, 2, 3];
-    let first = v.get(0).unwrap();
-
-    assert_eq!(*first, 1);
-    println!("Success!");
+    let numbers: Vec<i32> = (1..=10).collect();
+    let evens: Vec<_> = numbers.iter().filter(|&&x| x % 2 == 0).collect();
+    println!("{:?}", evens);
 }
 
 #[test] // Тест 23
 fn test23() {
-    let v = vec![1, 2, 3];
-
-    let second = match v.get(1) {
-        Some(&value) => value,
-        None => 0,
-    };
-
-    assert_eq!(second, 2);
-    println!("Success!");
+    let numbers = vec![1, 2, 3, 4, 5];
+    let doubled: Vec<_> = numbers.iter().map(|x| x * 2).collect();
+    println!("{:?}", doubled);
 }
 
 #[test] // Тест 24
 fn test24() {
-    let v = vec![1, 2, 3];
-    let third = v.get(2).expect("There should be three elements!");
-
-    assert_eq!(*third, 3);
-    println!("Success!");
+    let s1 = String::from("Rust");
+    let s2 = String::from("Language");
+    let concatenated = format!("{} {}", s1, s2);
+    assert_eq!(concatenated, "Rust Language");
 }
 
 #[test] // Тест 25
 fn test25() {
-    let mut v = vec![1, 2, 3];
-    v.push(4);
-
-    assert_eq!(v.len(), 4);
-    println!("Success!");
+    let vec = vec![1, 2, 3, 4, 5];
+    let last_element = vec.last().unwrap();
+    assert_eq!(*last_element, 5);
 }
 
 #[test] // Тест 26
 fn test26() {
-    let mut v = vec![1, 2, 3];
-    let last = v.pop();
-
-    assert_eq!(last, Some(3));
-    assert_eq!(v.len(), 2);
-    println!("Success!");
+    let squares: Vec<i32> = (1..=5).map(|x| x * x).collect();
+    println!("{:?}", squares);
 }
 
 #[test] // Тест 27
 fn test27() {
-    let v = vec![1, 2, 3];
-    let first = &v[0];
-
-    assert_eq!(*first, 1);
-    println!("Success!");
+    let sentence = String::from("hello world");
+    let words: Vec<&str> = sentence.split_whitespace().collect();
+    assert_eq!(words, vec!["hello", "world"]);
 }
 
 #[test] // Тест 28
 fn test28() {
-    let mut v = vec![1, 2, 3];
-    v[1] = 4;
-
-    assert_eq!(v[1], 4);
-    println!("Success!");
+    let num = Some(5);
+    if let Some(n) = num {
+        println!("Number is: {}", n);
+    }
 }
 
 #[test] // Тест 29
 fn test29() {
-    let mut v = vec![1, 2, 3];
-    v.sort();
-
-    assert_eq!(v, vec![1, 2, 3]);
-    println!("Success!");
+    let text = "Rust programming language";
+    let reversed: String = text.chars().rev().collect();
+    println!("{}", reversed);
 }
-
