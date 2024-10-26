@@ -1,4 +1,4 @@
-fn count_permutation(shipments: &Vec<u32>) -> usize {
+fn count_permutation(shipments: &[u32]) -> usize {
     let total: u32 = shipments.iter().sum();
     let n = shipments.len();
 
@@ -19,11 +19,11 @@ fn count_permutation(shipments: &Vec<u32>) -> usize {
 }
 
 fn gen_shipments(n: usize) -> Vec<u32> {
-    let total: u32 = (n as u32 * (n as u32 + 1)) / 2;
+    let total: u32 = ((n * (n + 1)) / 2) as u32;
     let mut shipments = vec![total / n as u32; n];
 
-    for i in 0..total as usize % n {
-        shipments[i] += 1;
+    for i in 0..(total % n as u32) {
+        shipments[i as usize] += 1;
     }
 
     shipments
@@ -43,17 +43,13 @@ fn main() {
     println!("Згенеровані вантажі: {:?}", generated_shipments);
 }
 
-fn test_data() -> Vec<u32> {
-    vec![4, 3, 5]
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_count_permutation() {
-        let shipments = test_data();
+        let shipments = vec![4, 3, 5];
         let moves = count_permutation(&shipments);
         assert_eq!(moves, 1);
     }
@@ -65,3 +61,4 @@ mod tests {
         assert!(generated_shipments.iter().all(|&x| x >= 1));
     }
 }
+
