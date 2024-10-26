@@ -1,23 +1,25 @@
-const WIDTH: usize = 28;  
+const WIDTH: usize = 21;  
 const HEIGHT: usize = 13; 
 
 fn main() {
-    let mut output = String::new();
-
     for i in 0..HEIGHT {
         for j in 0..WIDTH {
             if i == 0 || i == HEIGHT - 1 {
-                output.push('*');
+                print!("*");
             } else if j == 0 || j == WIDTH - 1 {
-                output.push('*');
-            } else if j >= i && j < WIDTH - i {
-                output.push('*');
+                print!("*");
+            } else if j == i && i < HEIGHT / 2 {
+                print!("*");
+            } else if j == WIDTH - 1 - i && i < HEIGHT / 2 {
+                print!("*");
+            } else if j == (i - HEIGHT / 2 + HEIGHT / 2) && i >= HEIGHT / 2 {
+                print!("*");
+            } else if j == (WIDTH - 1 - (i - HEIGHT / 2)) && i >= HEIGHT / 2 {
+                print!("*");
             } else {
-                output.push(' ');
+                print!(" ");
             }
         }
-        output.push('\n');
+        println!();
     }
-
-    println!("{}", output);
 }
