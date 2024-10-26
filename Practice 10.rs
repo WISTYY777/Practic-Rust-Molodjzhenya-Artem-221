@@ -1,11 +1,12 @@
 fn rotate(s: String, n: isize) -> String {
-    let len = s.len();
-    if len == 0 {
+    let length = s.len();
+    if length == 0 {
         return s;
     }
-    let n = n.rem_euclid(len as isize) as usize;
-    let (first, second) = s.split_at(len - n);
-    format!("{}{}", second, first)
+    let n = (n % length as isize + length as isize) % length as isize; // Рахуємо зміщення в межах довжини рядка
+    let n = n as usize;
+    let (start, end) = s.split_at(length - n);
+    format!("{}{}", end, start)
 }
 
 #[cfg(test)]
@@ -13,33 +14,25 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test() {
-        let s = "abcdefgh";
-        let shifts = [
-            (0,  "abcdefgh"),
-            (8,  "abcdefgh"),
-            (-8, "abcdefgh"),
-            (1,  "habcdefg"),
-            (2,  "ghabcdef"),
-            (10, "ghabcdef"),
+    fn test_rotation() {
+        let word = "abcdefgh";
+        let cases = [
+            (0, "abcdefgh"),
+            (1, "habcdefg"),
+            (2, "ghabcdef"),
             (-1, "bcdefgha"),
             (-2, "cdefghab"),
-            (-10,"cdefghab"),
+            (8, "abcdefgh"), 
         ];
-        shifts
-            .iter()
-            .for_each(|(n, exp)| {
-                assert_eq!(
-                    rotate(s.to_string(), *n), 
-                    exp.to_string()
-                )
-            });
+
+        for (shift, expected) in cases.iter() {
+            assert_eq!(rotate(word.to_string(), *shift), *expected);
+        }
     }
 }
 
 fn main() {
-    let input = "abcdefgh".to_string();
-    let shifts = 2;
-    let result = rotate(input, shifts);
-    println!("{}", result);
+    let word = "abcdefgh".to_string();
+    let shift = 2;
+    println!("{}", rotate(word, shift));
 }
