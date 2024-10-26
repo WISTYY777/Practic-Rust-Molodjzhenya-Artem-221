@@ -1,19 +1,17 @@
 fn swap_case(s: &str) -> String {
     s.chars()
-        .map(|c| {
-            if c.is_lowercase() {
-                c.to_uppercase().collect::<String>()
-            } else {
-                c.to_lowercase().collect::<String>()
-            }
+        .map(|c| if c.is_lowercase() {
+            c.to_uppercase().next().unwrap()
+        } else {
+            c.to_lowercase().next().unwrap()
         })
         .collect()
 }
 
 fn main() {
-    let result = swap_case("Доброго вечора ми з україни!!!"); //Можливо поставити любий текст який вам сподобаєця (вибрав такий текст просто як привітання але думаю таких буде багато:))
-    println!("{}", result); 
-    println!("Результат зміни регістру: {}", result); 
+    let text = "Доброго вечора ми з україни!!!";
+    let result = swap_case(text);
+    println!("Результат зміни регістру: {}", result);
 }
 
 #[cfg(test)]
