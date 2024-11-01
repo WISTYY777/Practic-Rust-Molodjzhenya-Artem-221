@@ -1,41 +1,57 @@
 use std::convert::TryInto;
 
+// Визначаємо функцію для перевірки, чи задовольняє поточна комбінація цифр умову рівняння
 fn check_solution(m: i32, u: i32, x: i32, a: i32, s: i32, l: i32, o: i32, n: i32) -> bool {
+    // Обчислюємо чотиризначне число для Муха, використовуючи цифри m, u, x, a
     let muxa = 1000 * m + 100 * u + 10 * x + a;
+    // Обчислюємо чотиризначне число для Слон, використовуючи цифри s, l, o, n
     let slon = 1000 * s + 100 * l + 10 * o + n;
+    // Перевіряємо, чи множення Муха на a дорівнює Слон; якщо так, повертаємо true
     muxa * a == slon
 }
 
+// Визначаємо рекурсивну функцію для генерації всіх перестановок вектора цілих чисел
 fn permute(nums: &mut Vec<i32>, start: usize, result: &mut Vec<Vec<i32>>) {
+    // Базовий випадок: якщо досягли кінця вектора, додаємо поточну перестановку до результатів
     if start == nums.len() {
-        result.push(nums.clone());
+        result.push(nums.clone()); // Клонуємо поточну перестановку та додаємо до результатів
     } else {
+        // Рекурсивний випадок: міняємо місцями кожен елемент з початковою позицією та генеруємо перестановки
         for i in start..nums.len() {
-            nums.swap(start, i);
-            permute(nums, start + 1, result);
-            nums.swap(start, i);
+            nums.swap(start, i); // Міняємо місцями елементи на позиціях start і i
+            permute(nums, start + 1, result); // Рекурсивний виклик для наступного рівня перестановок
+            nums.swap(start, i); // Повертаємо вектор у початковий стан
         }
     }
 }
 
+// Визначаємо функцію для знаходження та відображення всіх рішень
 fn find_solutions() {
+    // Ініціалізуємо вектор цифр 1-8, оскільки 0 не дозволяється
     let mut digits = vec![1, 2, 3, 4, 5, 6, 7, 8];
-    let mut solution_count = 0;
-    let mut results = Vec::new();
+    let mut solution_count = 0; // Лічильник для кількості знайдених рішень
+    let mut results = Vec::new(); // Вектор для зберігання всіх перестановок
 
+    // Генеруємо всі перестановки цифр і зберігаємо їх у results
     permute(&mut digits, 0, &mut results);
 
+    // Перебираємо кожну перестановку
     for combination in results {
+        // Розбиваємо перестановку на окремі змінні
         let [m, u, x, a, s, l, o, n]: [i32; 8] = combination.try_into().unwrap();
+        // Перевіряємо, чи поточна комбінація є рішенням
         if check_solution(m, u, x, a, s, l, o, n) {
-            solution_count += 1;
-            println!("Solution {}: Муха={}{}{}{} Слон={}{}{}{}", 
+            solution_count += 1; // Збільшуємо лічильник рішень
+            // Виводимо рішення у вказаному форматі
+            println!("Рішення {}: Муха={}{}{}{} Слон={}{}{}{}", 
                 solution_count, m, u, x, a, s, l, o, n);
         }
     }
-    println!("Total solutions found: {}", solution_count);
+    // Виводимо загальну кількість знайдених рішень
+    println!("Загальна кількість знайдених рішень: {}", solution_count);
 }
 
+// Основна функція для запуску програми
 fn main() {
-    find_solutions();
+    find_solutions(); // Викликаємо функцію find_solutions для знаходження та відображення всіх рішень
 }
